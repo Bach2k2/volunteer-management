@@ -1,0 +1,36 @@
+.body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: black;
+}
+.navbar {
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  flex-direction: row;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navbar-nav {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item{
+    margin: 0 0.5rem;
+    cursor: pointer;
+    color: black;
+}
+
+.navbar-item:hover {
+  color: aqua;
+}

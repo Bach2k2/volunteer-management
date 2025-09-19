@@ -1,0 +1,70 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="position-absolute w-100" style="top: 2rem; left: 0;">
+    <div *ngIf="loginError" class="alert alert-danger text-center w-100" style="max-width: 400px; margin: 0 auto;">
+      {{ loginError }}
+    </div>
+  </div>
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-circle fs-1 text-primary"></i>
+      <h2 class="mb-0 mt-2">Login</h2>
+      <p class="text-muted">Welcome back! Please login to your account.</p>
+    </div>
+    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+      <div class="form-group mb-3 position-relative">
+        <label for="email">Username</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person"></i></span>
+          <input
+            type="text"
+            class="form-control"
+            id="email"
+            placeholder="Enter username"
+            required
+            [(ngModel)]="defaultLogin.username"
+            name="username"
+            #username="ngModel"
+          />
+        </div>
+        <div *ngIf="username.invalid && username.touched" class="error">Username is required</div>
+      </div>
+      <div class="form-group mb-3 position-relative">
+        <label for="password">Password</label>
+        <div class="input-group" id="show_hide_password">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Password"
+            required
+            [(ngModel)]="defaultLogin.password"
+            name="password"
+            #password="ngModel"
+            (keydown)="onPasswordKeydown($event, loginBtn)"
+          />
+          <span
+            class="input-group-text"
+            style="cursor: pointer"
+            onclick="const p=document.getElementById('password');p.type=p.type==='password'?'text':'password';this.firstElementChild.classList.toggle('bi-eye');this.firstElementChild.classList.toggle('bi-eye-slash');"
+          >
+            <i class="bi bi-eye"></i>
+          </span>
+        </div>
+        <div *ngIf="password.invalid && password.touched" class="error">Password is required</div>
+        <div class="text-end mt-1">
+          <a href="#" class="small text-decoration-none z-0" (click)="onForgotPassword()">Forgot password?</a>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 mt-2 d-flex align-items-center justify-content-center" [disabled]="loading || loginForm.invalid" #loginBtn>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        <span *ngIf="!loading">Login</span>
+        <span *ngIf="loading">Logging in...</span>
+      </button>
+    </form>
+    <div class="text-center mt-3">
+      <span class="text-muted">Don't have an account?</span>
+      <a routerLink="/register" class="ms-1">Register</a>
+    </div>
+  </div>
+</div>
