@@ -1,9 +1,9 @@
 spring.application.name=volunteer
-spring.secret-key=bZRM4UJLqKSLOaHBSExuHRPL8isGVJTh+LTIaLEnoQ9mCXJNG6u30hqb6HAkUdnLn313wkCS6bbbpNpge4euzw==
+spring.secret-key=
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/volunteer_manager?useSSL=false
-spring.datasource.username=postgres
-spring.datasource.password=bach2002
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
 
 # Hibernate Configuration
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation= true
@@ -13,6 +13,6 @@ spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=update
 
 # CORS Configuration
-spring.web.cors.allowed-origins=http://localhost:4200
+spring.web.cors.allowed-origins=
 spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
 spring.web.cors.allowed-headers=*
