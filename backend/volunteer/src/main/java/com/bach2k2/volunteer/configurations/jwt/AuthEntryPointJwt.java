@@ -1,4 +1,4 @@
-package com.bach2k2.volunteer.configure.jwt;
+package com.bach2k2.volunteer.configurations.jwt;
 
 import java.util.HashMap;
 import java.util.Map;

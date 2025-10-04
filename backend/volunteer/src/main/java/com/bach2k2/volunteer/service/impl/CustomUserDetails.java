@@ -25,7 +25,15 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+        String roles = user.getRole();
+        if (roles == null || roles.isEmpty()) {
+            return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        
+        return java.util.Arrays.stream(roles.split(","))
+                .map(String::trim)
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(java.util.stream.Collectors.toList());
     }
 
 

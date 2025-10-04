@@ -1,4 +1,4 @@
-package com.bach2k2.volunteer.configure.jwt;
+package com.bach2k2.volunteer.configurations.jwt;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,13 +7,15 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import java.util.List;
+
 import javax.crypto.SecretKey;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component
-public class JwtTokenProvider  {
+public class JwtTokenProvider {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
    
     @Value("${spring.secret-key}")
@@ -22,18 +24,25 @@ public class JwtTokenProvider  {
     @Bean
     public SecretKey jwtSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        System.err.println("JWT Secret Key: " + secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateJwtToken(String username){
+    public String generateJwtToken(String username, Long userId, List<String> roles){
         return Jwts.builder()
                 .setSubject(username)
+                .claim("userId", userId)
+                .claim("roles", roles)
                 .setIssuedAt(new java.util.Date())
                 .setExpiration(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(jwtSecretKey(), SignatureAlgorithm.HS512)
                 .compact();
-        
     }
+    
+    // Keep the old method for backwards compatibility
+    // public String generateJwtToken(String username){
+    //     return generateJwtToken(username, null, java.util.Arrays.asList("USER"));
+    // }
 
     public Long getUserIdFromToken(String token) {
         try {
@@ -43,6 +52,33 @@ public class JwtTokenProvider  {
                     .parseClaimsJws(token)
                     .getBody();
             return Long.parseLong(claims.get("userId").toString());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<String> getRolesFromToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtSecretKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return (List<String>) claims.get("roles");
+        } catch (Exception e) {
+            return java.util.Arrays.asList("USER");
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtSecretKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();
         } catch (Exception e) {
             return null;
         }

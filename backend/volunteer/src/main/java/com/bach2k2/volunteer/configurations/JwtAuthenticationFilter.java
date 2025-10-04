@@ -1,4 +1,4 @@
-package com.bach2k2.volunteer.configure;
+package com.bach2k2.volunteer.configurations;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,13 +14,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.bach2k2.volunteer.service.impl.UserDetailServiceImpl;
-import com.bach2k2.volunteer.configure.jwt.JwtTokenProvider;
+import com.bach2k2.volunteer.configurations.jwt.JwtTokenProvider;
 
 import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    // private final String SECRET_KEY = "mysecret"; // just demo, put in config/env
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
@@ -44,7 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+            return;
         }
         filterChain.doFilter(request, response);
     }

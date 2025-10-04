@@ -4,7 +4,6 @@ package com.bach2k2.volunteer.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bach2k2.volunteer.dto.ApiResponseDto;
@@ -21,9 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Authentication", description = "Authentication APIs")
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200", "http://localhost:8081"}, 
-             allowedHeaders = "*", 
-             methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
+@CrossOrigin(origins = "http://localhost:4200")
+// @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200", "http://localhost:8081"}, 
+//              allowedHeaders = "*", 
+//              methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     

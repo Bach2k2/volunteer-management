@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
         @Autowired
         JwtTokenProvider jwtTokenProvider;
-        
+
         @Autowired
         private PasswordEncoder passwordEncoder;
 
@@ -49,14 +49,19 @@ public class AuthServiceImpl implements AuthService {
                                                         loginRequest.getPassword()));
                         System.out.println("Generated Token:" + authentication);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                        String token = jwtTokenProvider.generateJwtToken(loginRequest.getUsername());
-                        System.out.println("Generated Token: " + token);
                         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
                         List<String> roles = userDetails.getAuthorities().stream()
                                         .map(GrantedAuthority::getAuthority)
                                         .collect(Collectors.toList());
+                        System.out.println("roles: " + roles);
+                        String token = jwtTokenProvider.generateJwtToken(
+                                        userDetails.getUsername(),
+                                        userDetails.getId(),
+                                        roles);
+                        System.out.println("Generated Token: " + token);
 
-                        LoginResponseDto loginResponseDto = new LoginResponseDto(token);
+                        LoginResponseDto loginResponseDto = new LoginResponseDto(
+                                        token);
                         return ResponseEntity.ok(new ApiResponseDto<LoginResponseDto>(200, "Login successful",
                                         loginResponseDto));
                 } catch (BadCredentialsException e) {
@@ -67,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 } catch (Exception e) {
                         System.err.println(e.getMessage());
                         return ResponseEntity.status(500)
-                                        .body(new ApiResponseDto<>(500, "An error occurred during login")); 
+                                        .body(new ApiResponseDto<>(500, "An error occurred during login"));
                 }
         }
 
@@ -78,6 +83,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         private User createUserIfNotExist(RegisterRequestDto registerRequest) {
-                return new User(registerRequest.getEmail(), registerRequest.getUsername(), passwordEncoder.encode(registerRequest.getPassword()), String.join(",", registerRequest.getRoles()));      
+                return new User(registerRequest.getEmail(), registerRequest.getUsername(),
+                                passwordEncoder.encode(registerRequest.getPassword()),
+                                String.join(",", registerRequest.getRoles()));
         }
 }

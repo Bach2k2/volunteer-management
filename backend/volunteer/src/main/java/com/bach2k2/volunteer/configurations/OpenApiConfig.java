@@ -20,11 +20,7 @@ import org.springframework.context.annotation.Configuration;
         contact = @Contact(
             name = "Bach2k2",
             email = "bach2k2@example.com"
-        ),
-         servers = {
-        @Server(url = "http://localhost:8088", description = "Local Development Server"),
-        @Server(url = "http://45.117.179.16:8088", description = "Production Server"),
-    }
+        )
     )
 )
 @SecurityScheme(

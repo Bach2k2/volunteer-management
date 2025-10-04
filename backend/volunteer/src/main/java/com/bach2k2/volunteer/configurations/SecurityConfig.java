@@ -1,28 +1,31 @@
-package com.bach2k2.volunteer.configure;
+package com.bach2k2.volunteer.configurations;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-// import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.bach2k2.volunteer.configure.jwt.AuthEntryPointJwt;
+import com.bach2k2.volunteer.configurations.jwt.AuthEntryPointJwt;
 import com.bach2k2.volunteer.service.impl.UserDetailServiceImpl;
 
 @Configuration
 // @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
     @Autowired
     UserDetailServiceImpl uDetailServiceImpl;
 
@@ -41,7 +44,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-   
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -50,13 +52,23 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    // Default AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-  
+    // Custom AuthenticationManager
+    // @Bean
+    // public AuthenticationManager authenticationManager(UserDetailsService
+    // userDetailsService) {
+    // DaoAuthenticationProvider authProvider = new
+    // DaoAuthenticationProvider(uDetailServiceImpl);
+    // authProvider.setPasswordEncoder(passwordEncoder());
+    // return new ProviderManager(authProvider);
+    // }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -77,7 +89,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/public/**").permitAll()
                         .anyRequest().authenticated());
 
-        http.authenticationProvider(authenticationProvider());
+        // http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 

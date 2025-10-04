@@ -25,10 +25,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @Tag(name = "User Management", description = "User Management APIs")
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200", "http://localhost:8081"}, 
-             allowedHeaders = "*", 
-             methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
-@SecurityRequirement(name = "Bearer Authentication") 
+@CrossOrigin(origins = "http://localhost:4200")
+// @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200", "http://localhost:8081"}, 
+//              allowedHeaders = "*", 
+//              methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
+// @SecurityRequirement(name = "Bearer Authentication") 
 @RequestMapping("/api/v1/users")
 public class UserController {
     @Autowired

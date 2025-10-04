@@ -1,5 +1,6 @@
 package com.bach2k2.volunteer.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Home", description = "Home APIs")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class HomeController {
 
