@@ -1,0 +1,18 @@
+spring.application.name=volunteer
+spring.secret-key=
+
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+# Hibernate Configuration
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation= true
+spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
+
+# Hibernate ddl auto (create, create-drop, validate, update)
+spring.jpa.hibernate.ddl-auto=update
+
+# CORS Configuration
+spring.web.cors.allowed-origins=
+spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+spring.web.cors.allowed-headers=*
