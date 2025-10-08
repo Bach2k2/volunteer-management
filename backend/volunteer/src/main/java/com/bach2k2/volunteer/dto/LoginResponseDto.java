@@ -5,17 +5,23 @@ package com.bach2k2.volunteer.dto;
 // @Data
 // @Builder
 public class LoginResponseDto {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
-    public LoginResponseDto(String token) {
-        this.token = token;
+    public LoginResponseDto(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

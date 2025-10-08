@@ -11,5 +11,6 @@ import com.bach2k2.volunteer.dto.RegisterRequestDto;
 public interface AuthService {
     ResponseEntity<ApiResponseDto<?>> login(LoginRequestDto loginRequest);
     ResponseEntity<ApiResponseDto<?>> register(RegisterRequestDto registerRequest);
+    String refreshToken(String refreshToken);
     // ResponseEntity<ApiResponseDto<?>> logout();
 }
