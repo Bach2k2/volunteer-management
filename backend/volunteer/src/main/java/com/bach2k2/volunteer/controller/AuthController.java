@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bach2k2.volunteer.dto.ApiResponseDto;
 import com.bach2k2.volunteer.dto.LoginRequestDto;
+import com.bach2k2.volunteer.dto.RefreshTokenRequestDto;
 import com.bach2k2.volunteer.dto.RegisterRequestDto;
 import com.bach2k2.volunteer.service.AuthService;
 
@@ -33,9 +34,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto<?>> login(@RequestBody @Valid LoginRequestDto loginRequest) {
-        return authService.login(loginRequest);
-        
+        return authService.login(loginRequest);   
     }
+    
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponseDto<?>> refreshToken(@RequestBody RefreshTokenRequestDto request) {
+        String newRefreshToken = authService.refreshToken(request.getRefreshToken());
+        if (newRefreshToken != null) {
+            return ResponseEntity.ok(new ApiResponseDto<>(200, "Token refreshed successfully", newRefreshToken));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponseDto<>(400, "Invalid refresh token"));
+        }
+    }
+    
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponseDto<?>> register(@RequestBody @Valid RegisterRequestDto registerRequest) {

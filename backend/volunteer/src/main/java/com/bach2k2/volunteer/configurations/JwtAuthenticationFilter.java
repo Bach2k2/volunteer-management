@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
+        
+        // Skip JWT processing if user is already authenticated
+        if (SecurityContextHolder.getContext().getAuthentication() != null && 
+            SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+            !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String jwt = getJwtFromRequest(request);
             if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
@@ -43,8 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception ex) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
-            return;
+            // Log the error but don't send error response immediately
+            // Let the request continue and let Spring Security handle unauthorized access
+            System.err.println("JWT Authentication error: " + ex.getMessage());
         }
         filterChain.doFilter(request, response);
     }

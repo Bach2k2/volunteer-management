@@ -54,14 +54,18 @@ public class AuthServiceImpl implements AuthService {
                                         .map(GrantedAuthority::getAuthority)
                                         .collect(Collectors.toList());
                         System.out.println("roles: " + roles);
-                        String token = jwtTokenProvider.generateJwtToken(
+                        String accessToken = jwtTokenProvider.generateJwtAccessToken(
                                         userDetails.getUsername(),
                                         userDetails.getId(),
                                         roles);
-                        System.out.println("Generated Token: " + token);
+                        String refreshToken = jwtTokenProvider.generateJwtRefreshToken(
+                                        userDetails.getUsername(),
+                                        userDetails.getId(),
+                                        roles);
+                        System.out.println("Generated Token: " + accessToken);
 
                         LoginResponseDto loginResponseDto = new LoginResponseDto(
-                                        token);
+                                        accessToken, refreshToken);
                         return ResponseEntity.ok(new ApiResponseDto<LoginResponseDto>(200, "Login successful",
                                         loginResponseDto));
                 } catch (BadCredentialsException e) {
@@ -74,6 +78,18 @@ public class AuthServiceImpl implements AuthService {
                         return ResponseEntity.status(500)
                                         .body(new ApiResponseDto<>(500, "An error occurred during login"));
                 }
+        }
+        
+        @Override
+        public String refreshToken(String refreshToken) {
+                if (!jwtTokenProvider.validateToken(refreshToken)) {
+                        return null;
+                }
+                String accessToken= jwtTokenProvider.generateJwtAccessToken(
+                                jwtTokenProvider.getUsernameFromToken(refreshToken),
+                                jwtTokenProvider.getUserIdFromToken(refreshToken),
+                                jwtTokenProvider.getRolesFromToken(refreshToken));
+                return accessToken;
         }
 
         public ResponseEntity<ApiResponseDto<?>> register(RegisterRequestDto registerRequest) {

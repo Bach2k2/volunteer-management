@@ -28,13 +28,26 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateJwtToken(String username, Long userId, List<String> roles){
+    public String generateJwtAccessToken(String username, Long userId, List<String> roles){
         return Jwts.builder()
                 .setSubject(username)
                 .claim("userId", userId)
                 .claim("roles", roles)
+                .claim("tokenType", "access")
                 .setIssuedAt(new java.util.Date())
-                .setExpiration(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 15)) // 15 minutes
+                .signWith(jwtSecretKey(), SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    public String generateJwtRefreshToken(String username, Long userId, List<String> roles){
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("userId", userId)
+                .claim("roles", roles)
+                .claim("tokenType", "refresh")
+                .setIssuedAt(new java.util.Date())
+                .setExpiration(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 days
                 .signWith(jwtSecretKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -87,17 +100,19 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token){
         try {
-            Jwts.parserBuilder().setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secretKey.getBytes())).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(jwtSecretKey())
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex) {
-
             log.error("Invalid JWT token - {}", ex.getMessage());
-        }catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+        } catch (ExpiredJwtException ex) {
+            log.error("Expired JWT token - {}", ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
+            log.error("Unsupported JWT token - {}", ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty - {}", ex.getMessage());
         }
         return false;
     }
